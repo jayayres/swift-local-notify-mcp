@@ -12,6 +12,12 @@ LoggingSystem.bootstrap { label in
 
 let logger = Logger(label: "com.example.mcp-local-notify")
 
+func sanitizeString(_ input: String) -> String {
+    return input.components(separatedBy: CharacterSet(charactersIn: "\"'\\{}[]()"))
+                .joined()
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+}
+
 func showDialog(title: String, message: String) throws {
     let script = "display dialog \"\(message)\" with title \"\(title)\""
     let process = Process()
@@ -78,8 +84,11 @@ await server.withMethodHandler(CallTool.self) { params in
     }
     let titleString = params.arguments?["title"]?.stringValue ?? ""
     
+    let sanitizedText = sanitizeString(textString)
+    let sanitizedTitle = sanitizeString(titleString)
+
     do {
-        try showDialog(title: titleString, message: textString)
+        try showDialog(title: sanitizedTitle, message: sanitizedText)
         return .init(content: [.text("Complete")], isError: false)
     } catch {
         return .init(content: [.text("Failed to show notification: \(error)")], isError: true)

@@ -34,8 +34,9 @@ swift --version
 
 1. Clone the git repository:
    ```bash
-   git clone <repository-url>
-   cd $GITHUB_WORKSPACE
+   git clone https://github.com/jayayres/swift-local-notify-mcp.git
+   cd swift-local-notify-mcp
+   export GITHUB_WORKSPACE=`pwd`
    ```
 
 2. Build the project:
